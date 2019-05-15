@@ -60,7 +60,6 @@ const getTodoByIdRequest = (state) => {
   return {
     ...state,
     error: null,
-    isTodoLoaded: false,
   };
 };
 

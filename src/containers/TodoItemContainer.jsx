@@ -56,6 +56,7 @@ const TodoItemContainer = ({ todo, isTodoLoaded, getTodoById, updateTodo, delete
   };
 
   if (!isTodoLoaded) {
+    console.log('fewfwe');
     return (
       <div className="container d-flex justify-content-center mt-5">
         <Spinner />

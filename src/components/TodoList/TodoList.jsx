@@ -10,7 +10,7 @@ const TodoList = ({ todos }) => {
       <div key={id} className="card shadow my-4 col-xs-12 col-md-4 col-lg-3 mr-5 px-0">
         <div className="card-body">
           <h3 className="card-title">
-            <Link to={'/todos/' + id} className="card-link">
+            <Link to={'/todo-item/' + id} className="card-link">
               {title}
             </Link>
           </h3>

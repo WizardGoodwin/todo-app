@@ -4,15 +4,14 @@ const initialState = {
   todos: [],
   todo: {},
   error: null,
-  isLoading: false,
-  isLoaded: false,
+  isTodoLoaded: false,
+  isTodosLoaded: false,
 };
 
 const addTodoRequest = (state) => {
   return {
     ...state,
     error: null,
-    isLoading: true
   };
 };
 
@@ -21,7 +20,6 @@ const addTodoSuccess = (state, action) => {
   return {
     ...state,
     error: null,
-    isLoading: false,
     todos: state.todos.concat([newTodo]),
   };
 };
@@ -30,7 +28,6 @@ const addTodoFail = (state, action) => {
   return {
     ...state,
     error: action.error,
-    isLoading: false,
   };
 };
 
@@ -38,7 +35,7 @@ const getTodosRequest = (state) => {
   return {
     ...state,
     error: null,
-    isLoaded: false,
+    isTodosLoaded: false,
   };
 };
 
@@ -47,7 +44,7 @@ const getTodosSuccess = (state, action) => {
     ...state,
     todos: action.todos,
     error: null,
-    isLoaded: true,
+    isTodosLoaded: true,
   };
 };
 
@@ -55,7 +52,7 @@ const getTodosFail = (state, action) => {
   return {
     ...state,
     error: action.error,
-    isLoaded: true,
+    isTodosLoaded: true,
   };
 };
 
@@ -63,7 +60,7 @@ const getTodoByIdRequest = (state) => {
   return {
     ...state,
     error: null,
-    isLoaded: false,
+    isTodoLoaded: false,
   };
 };
 
@@ -72,7 +69,7 @@ const getTodoByIdSuccess = (state, action) => {
     ...state,
     todo: action.todo,
     error: null,
-    isLoaded: true,
+    isTodoLoaded: true,
   };
 };
 
@@ -80,7 +77,7 @@ const getTodoByIdFail = (state, action) => {
   return {
     ...state,
     error: action.error,
-    isLoaded: true,
+    isTodoLoaded: true,
   };
 };
 
@@ -88,22 +85,14 @@ const updateTodoRequest = (state) => {
   return {
     ...state,
     error: null,
-    isLoading: true,
   };
 };
 
-const updateTodoSuccess = (state, action) => {
-  // finding index of updating todoItem in the array of posts
-  const idx = state.todos.findIndex((todo) => todo[0] === action.id);
-  // creating copy of array
-  const newTodos = state.todos.slice();
-  // changing updated todoItem in the array
-  newTodos[idx] = [action.id, action.todo];
+const updateTodoSuccess = (state, action) => {  
   return {
-    ...state,
-    posts: newTodos,
+    ...state,    
     error: null,
-    isLoading: false,
+    todo: action.todo
   };
 };
 
@@ -111,7 +100,6 @@ const updateTodoFail = (state, action) => {
   return {
     ...state,
     error: action.error,
-    isLoading: false,
   };
 };
 
@@ -119,7 +107,6 @@ const deleteTodoRequest = (state) => {
   return {
     ...state,
     error: null,
-    isLoading: true,
   };
 };
 
@@ -130,7 +117,6 @@ const deleteTodoSuccess = (state, action) => {
     ...state,
     todos: newTodos,
     error: null,
-    isLoading: false,
   };
 };
 
@@ -138,7 +124,6 @@ const deleteTodoFail = (state, action) => {
   return {
     ...state,
     error: action.error,
-    isLoading: false,
   };
 };
 

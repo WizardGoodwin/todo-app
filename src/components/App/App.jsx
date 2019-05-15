@@ -1,16 +1,17 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import ToDoListContainer from '../../containers/TodoListContainer';
-import ToDoItemContainer from '../../containers/TodoItemContainer';
-import NotFound from '../../shared/NotFound/NotFound';
+
+import TodoListContainer from '../../containers/TodoListContainer';
+import TodoItemContainer from '../../containers/TodoItemContainer';
 import Layout from '../Layout/Layot';
+import NotFound from '../../components/NotFound/NotFound';
 
 const App = () => {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={ToDoListContainer} />
-        {/*<Route path="/todo-item/:id" component={ToDoItemContainer} />*/}
+        <Route path="/" exact component={TodoListContainer} />
+        <Route path="/todo-item/:id" component={TodoItemContainer} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

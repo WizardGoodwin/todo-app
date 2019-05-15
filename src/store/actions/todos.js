@@ -68,10 +68,9 @@ const updateTodoRequest = () => {
   };
 };
 
-const updateTodoSuccess = (id, todo) => {
+const updateTodoSuccess = (todo) => {
   return {
     type: actionTypes.UPDATE_TODO_SUCCESS,
-    id,
     todo,
   };
 };
@@ -160,8 +159,9 @@ export const updateTodo = (id, editedTodo) => {
     dispatch(updateTodoRequest());
     axios
       .put(`/todos/${id}.json`, todo)
-      .then(() => {
-        dispatch(updateTodoSuccess(id, todo));
+      .then((response) => {
+        console.log(response);
+        dispatch(updateTodoSuccess(response.data));
       })
       .catch((err) => {
         dispatch(updateTodoFail(err.response.data.error));

@@ -65,6 +65,7 @@ const TodoForm = ({
 
           <button
             className="btn btn-secondary float-right"
+            type="button"
             onClick={() => setModalOpen(false)}
           >
             Отменить

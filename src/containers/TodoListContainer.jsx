@@ -4,13 +4,13 @@ import Modal from 'react-modal';
 
 import TodoList from '../components/TodoList/TodoList';
 import TodoForm from '../components/TodoForm/TodoForm';
-import Spinner from '../shared/Spinner/Spinner';
+import Spinner from '../components/Spinner/Spinner';
 import { addTodo, getTodos } from '../store/actions/todos';
 
 //setting parent node for modal window
 Modal.setAppElement('#root');
 
-const TodoListContainer = ({ todos, isLoading, isLoaded, addTodo, getTodos }) => {
+const TodoListContainer = ({ todos, isTodosLoaded, addTodo, getTodos }) => {
   // state for handling modal windows
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -27,6 +27,7 @@ const TodoListContainer = ({ todos, isLoading, isLoaded, addTodo, getTodos }) =>
   // fetching all todos from backend on page load
   useEffect(() => {
     getTodos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // handling change of todoItem form inputs
@@ -48,8 +49,12 @@ const TodoListContainer = ({ todos, isLoading, isLoaded, addTodo, getTodos }) =>
     setValues(emptyForm);
   };
 
-  if (!isLoaded) {
-    return <Spinner />;
+  if (!isTodosLoaded) {
+    return (
+      <div className="container d-flex justify-content-center mt-5">
+        <Spinner />
+      </div>
+    );
   } else {
     return (
       <Fragment>
@@ -67,7 +72,6 @@ const TodoListContainer = ({ todos, isLoading, isLoaded, addTodo, getTodos }) =>
             onFormChange={onFormChange}
             setModalOpen={setModalOpen}
             onSubmit={onFormSubmit}
-            isLoading={isLoading}
           />
         </Modal>
 
@@ -84,11 +88,10 @@ const TodoListContainer = ({ todos, isLoading, isLoaded, addTodo, getTodos }) =>
   }
 };
 
-const mapStateToProps = ({ todos: { todos, isLoading, isLoaded } }) => {
+const mapStateToProps = ({ todos: { todos, isTodosLoaded } }) => {
   return {
     todos,
-    isLoading,
-    isLoaded,
+    isTodosLoaded,
   };
 };
 

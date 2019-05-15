@@ -1,128 +1,110 @@
-// import React, { Fragment, useEffect, useState } from 'react';
-// import { connect } from 'react-redux';
-//
-// import Post from '../pages/Posts/Post/Post';
-// import CommentForm from '../pages/Comments/CommentForm/CommentForm';
-// import CommentsList from '../pages/Comments/CommentsList/CommentsList';
-// import Spinner from '../shared/Spinner/Spinner';
-// import ErrorIndicator from '../shared/ErrorIndicator/ErrorIndicator';
-// import {
-//   addComment,
-//   getCommentsByPostId,
-//   incDislikeCounter,
-//   incLikeCounter,
-// } from '../store/actions/comments';
-//
-// const TodoItemContainer = ({
-//   post,
-//   isAuth,
-//   token,
-//   comments,
-//   commentsLoading,
-//   commentsError,
-//   addComment,
-//   getCommentsByPostId,
-//   incLikeCounter,
-//   incDislikeCounter,
-// }) => {
-//   // state for handling adding comment form
-//   const [commentForm, setCommentValues] = useState({
-//     commentTitle: '',
-//     commentBody: '',
-//     likeCounter: 0,
-//     dislikeCounter: 0,
-//   });
-//   const postId = post[0];
-//
-//   // fetching comments for one post from backend
-//   useEffect(() => {
-//     getCommentsByPostId(postId);
-//   }, []);
-//
-//   // handling change of comment form inputs
-//   const onCommentChange = (e) => {
-//     const { id, value } = e.target;
-//     setCommentValues({
-//       ...commentForm,
-//       [id]: value,
-//     });
-//   };
-//
-//   // handling comment form submit
-//   const onCommentSubmit = (e, postId) => {
-//     e.preventDefault();
-//     addComment(token, { ...commentForm, postId });
-//     setCommentValues({ commentTitle: '', commentBody: '' });
-//   };
-//
-//   if (commentsError) {
-//     return <ErrorIndicator />;
-//   }
-//
-//   if (commentsLoading) {
-//     return <Spinner />;
-//   } else {
-//     return (
-//       <Fragment>
-//         <Post post={post} />
-//
-//         {comments.length === 0 ? (
-//           //if there are no comments, then text below, else render comments list
-//           <h5 className="text-info mb-4">There are no comments yet</h5>
-//         ) : (
-//           <CommentsList
-//             comments={comments}
-//             incLikeCounter={incLikeCounter}
-//             incDislikeCounter={incDislikeCounter}
-//           />
-//         )}
-//
-//         {isAuth ? (
-//           // if user is logged in, then show comment adding form, else show text
-//           <CommentForm
-//             form={commentForm}
-//             postId={postId}
-//             onCommentChange={onCommentChange}
-//             onSubmit={onCommentSubmit}
-//           />
-//         ) : (
-//           <div className="card shadow-sm mt-4">
-//             <div className="card-body">
-//               <h5 className="text-danger">
-//                 Only registered users can add comments
-//               </h5>
-//             </div>
-//           </div>
-//         )}
-//       </Fragment>
-//     );
-//   }
-// };
-//
-// const mapStateToProps = ({
-//   auth: { token },
-//   comments: { comments, commentsLoading, commentsError },
-// }) => {
-//   return {
-//     isAuth: token !== null,
-//     token,
-//     comments,
-//     commentsLoading,
-//     commentsError,
-//   };
-// };
-//
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     addComment: (token, comment) => dispatch(addComment(token, comment)),
-//     getCommentsByPostId: (postId) => dispatch(getCommentsByPostId(postId)),
-//     incLikeCounter: (id, comment) => dispatch(incLikeCounter(id, comment)),
-//     incDislikeCounter: (id, comment) =>
-//       dispatch(incDislikeCounter(id, comment)),
-//   };
-// };
-//
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps,
-// )(TodoItemContainer);
+import React, { Fragment, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import Modal from 'react-modal';
+
+import TodoItem from '../components/TodoItem/TodoItem';
+import TodoForm from '../components/TodoForm/TodoForm';
+import Spinner from '../components/Spinner/Spinner';
+import {
+  getTodoById,
+  updateTodo,
+  deleteTodo,
+} from '../store/actions/todos';
+
+//setting parent node for modal window
+Modal.setAppElement('#root');
+
+const TodoItemContainer = ({ todo, isTodoLoaded, getTodoById, updateTodo, deleteTodo, history, match }) => {
+  // state for handling modal windows
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  // state for handling editing todoItem form
+  const [todoForm, setValues] = useState({});
+
+  // fetching todoItem by id from url
+  useEffect(() => {
+    getTodoById(match.params.id);
+    setValues({
+      title: todo.title,
+      shortDesc: todo.shortDesc,
+      fullDesc: todo.fullDesc,
+      time: todo.time
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [todo.title]);
+
+  // handling change of todoItem editing form
+  const onFormChange = (e) => {
+    const { id, value } = e.target;
+    setValues({
+      ...todoForm,
+      [id]: value,
+    });
+  };
+
+  // handling comment form submit
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    updateTodo(match.params.id, todoForm);
+    setModalOpen(false);
+  };
+
+  // handling deleting todoItem
+  const onDelete = () => {
+    deleteTodo(match.params.id);
+    history.replace('/');
+  };
+
+  if (!isTodoLoaded) {
+    return (
+      <div className="container d-flex justify-content-center mt-5">
+        <Spinner />
+      </div>
+    );
+  } else {
+    return (
+      <Fragment>
+        <TodoItem todo={todo} id={match.params.id} setModalOpen={setModalOpen} onDelete={onDelete} />
+
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={() => setModalOpen(false)}
+          className="modal-todo"
+          overlayClassName="overlay"
+          shouldCloseOnOverlayClick={true}
+          closeTimeoutMS={300}
+        >
+          <TodoForm
+            form={todoForm}
+            isNewItem={false}
+            onFormChange={onFormChange}
+            setModalOpen={setModalOpen}
+            onSubmit={onFormSubmit}
+          />
+        </Modal>
+      </Fragment>
+    );
+  }
+};
+
+const mapStateToProps = ({ todos: { todo, isTodoLoaded } }) => {
+  return {
+    todo,
+    isTodoLoaded,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getTodoById: (id) => dispatch(getTodoById(id)),
+    updateTodo: (id, todo) => dispatch(updateTodo(id, todo)),
+    deleteTodo: (id) => dispatch(deleteTodo(id)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  { pure: false },
+)(TodoItemContainer);

@@ -151,9 +151,7 @@ export const getTodoById = (id) => {
   };
 };
 
-export const updateTodo = (id, editedTodo) => {
-  // time and date of updating post
-  const date = new Date().toLocaleString();
+export const updateTodo = (id, editedTodo, date) => {
   const todo = { ...editedTodo, created_at: date };
   return (dispatch) => {
     dispatch(updateTodoRequest());

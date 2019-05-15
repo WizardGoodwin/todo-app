@@ -45,7 +45,7 @@ const TodoItemContainer = ({ todo, isTodoLoaded, getTodoById, updateTodo, delete
   // handling comment form submit
   const onFormSubmit = (e) => {
     e.preventDefault();
-    updateTodo(match.params.id, todoForm);
+    updateTodo(match.params.id, todoForm, todo.created_at);
     setModalOpen(false);
   };
 
@@ -97,7 +97,7 @@ const mapStateToProps = ({ todos: { todo, isTodoLoaded } }) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getTodoById: (id) => dispatch(getTodoById(id)),
-    updateTodo: (id, todo) => dispatch(updateTodo(id, todo)),
+    updateTodo: (id, todo, date) => dispatch(updateTodo(id, todo, date)),
     deleteTodo: (id) => dispatch(deleteTodo(id)),
   };
 };
